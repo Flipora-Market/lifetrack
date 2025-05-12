@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Task Tracker</title>
+    <meta name="theme-color" content="#6366F1">
+    <meta name="description" content="Track your daily tasks with this PWA">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-tasks"></i> TaskTrack</h1>
+            </div>
+            <div class="sidebar-menu">
+                <button class="menu-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i> Dashboard
+                </button>
+                <button class="menu-item" data-page="calendar">
+                    <i class="fas fa-calendar-alt"></i> Calendar
+                </button>
+                <button class="menu-item" data-page="reports">
+                    <i class="fas fa-chart-pie"></i> Reports
+                </button>
+                <button class="menu-item" data-page="settings">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+            <div class="sidebar-footer">
+                <button id="installBtn" class="install-btn" style="display: none;">
+                    <i class="fas fa-download"></i> Install App
+                </button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Dashboard Page -->
+            <div class="page" id="dashboard-page">
+                <div class="header">
+                    <div class="date-navigation">
+                        <button id="prevDayBtn" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                        <div class="date-display" id="currentDate"></div>
+                        <button id="nextDayBtn" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=User&background=6366F1&color=fff" alt="User">
+                    </div>
+                </div>
+
+                <div class="content-container">
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-number" id="totalTasks">0</span>
+                                <span class="stat-label">Total Tasks</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-number" id="completedTasks">0</span>
+                                <span class="stat-label">Completed</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-number" id="pendingTasks">0</span>
+                                <span class="stat-label">Pending</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="task-input-container">
+                        <div class="input-group">
+                            <input type="text" id="taskInput" placeholder="What needs to be done?">
+                            <button id="addTaskBtn" class="primary-btn">
+                                <i class="fas fa-plus"></i> Add Task
+                            </button>
+                        </div>
+                        <div class="input-options">
+                            <select id="prioritySelect">
+                                <option value="low">Low Priority</option>
+                                <option value="medium" selected>Medium Priority</option>
+                                <option value="high">High Priority</option>
+                            </select>
+                            <select id="repeatSelect">
+                                <option value="none">No Repeat</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <div class="additional-inputs">
+                            <textarea id="taskDescription" placeholder="Task description..."></textarea>
+                            <div class="image-upload">
+                                <label for="taskImage" class="image-upload-label">
+                                    <i class="fas fa-image"></i> Add Image
+                                </label>
+                                <input type="file" id="taskImage" accept="image/*" style="display: none;">
+                                <div id="imagePreview" class="image-preview"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="task-filters">
+                        <button class="filter-btn active" data-filter="all">All Tasks</button>
+                        <button class="filter-btn" data-filter="pending">Pending</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                        <button class="filter-btn" data-filter="high">High Priority</button>
+                    </div>
+
+                    <div class="task-list-container">
+                        <div class="task-list-header">
+                            <h3>Today's Tasks</h3>
+                            <div class="sort-options">
+                                <span>Sort by:</span>
+                                <select id="sortSelect">
+                                    <option value="priority">Priority</option>
+                                    <option value="date">Date Added</option>
+                                    <option value="name">Task Name</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="task-list" id="taskList">
+                            <!-- Tasks will be added here dynamically -->
+                        </div>
+
+                        <div class="empty-state" id="emptyState">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png" alt="No tasks">
+                            <h3>No Tasks Found</h3>
+                            <p>Add a new task to get started!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Page -->
+            <div class="page" id="reports-page" style="display: none;">
+                <div class="header">
+                    <h2>Task Reports</h2>
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=User&background=6366F1&color=fff" alt="User">
+                    </div>
+                </div>
+
+                <div class="content-container">
+                    <div class="report-filters">
+                        <div class="filter-group">
+                            <label for="reportRange">Date Range:</label>
+                            <select id="reportRange">
+                                <option value="week">Last 7 Days</option>
+                                <option value="month">Last 30 Days</option>
+                                <option value="quarter">Last 90 Days</option>
+                                <option value="year">Last Year</option>
+                                <option value="custom">Custom Range</option>
+                            </select>
+                        </div>
+                        <div class="filter-group" id="customRangeGroup" style="display: none;">
+                            <label for="startDate">From:</label>
+                            <input type="date" id="startDate">
+                            <label for="endDate">To:</label>
+                            <input type="date" id="endDate">
+                        </div>
+                        <button id="generateReportBtn" class="primary-btn">Generate Report</button>
+                    </div>
+
+                    <div class="report-stats-container">
+                        <div class="report-stat-card">
+                            <h3>Completion Rate</h3>
+                            <div class="completion-circle" id="completionRateCircle">
+                                <svg width="120" height="120" viewBox="0 0 120 120">
+                                    <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                                    <circle class="circle-progress" cx="60" cy="60" r="50"></circle>
+                                    <text class="circle-text" x="60" y="60">0%</text>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="report-stat-card">
+                            <h3>Task Distribution</h3>
+                            <div class="chart-container">
+                                <canvas id="priorityChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="report-stat-card">
+                            <h3>Daily Completion</h3>
+                            <div class="chart-container">
+                                <canvas id="dailyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-details">
+                        <h3>Task Completion History</h3>
+                        <div class="completion-table-container">
+                            <table id="completionTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Total Tasks</th>
+                                        <th>Completed</th>
+                                        <th>Completion Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Detail Modal -->
+    <div class="modal" id="taskDetailModal">
+        <div class="modal-content large-modal">
+            <span class="close-btn">&times;</span>
+            <h2 id="detailTaskTitle">Task Details</h2>
+            <div class="task-detail-content">
+                <div class="task-detail-left">
+                    <div class="task-meta-info">
+                        <div class="meta-item">
+                            <span class="meta-label">Priority:</span>
+                            <span class="meta-value" id="detailPriority"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Due Date:</span>
+                            <span class="meta-value" id="detailDueDate"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Repeat:</span>
+                            <span class="meta-value" id="detailRepeat"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Status:</span>
+                            <span class="meta-value" id="detailStatus"></span>
+                        </div>
+                    </div>
+                    <div class="task-description">
+                        <h3>Description</h3>
+                        <p id="detailDescription"></p>
+                    </div>
+                </div>
+                <div class="task-detail-right">
+                    <div class="task-image-container">
+                        <h3>Attached Image</h3>
+                        <div id="detailImageContainer">
+                            <img id="detailImage" src="" alt="Task image">
+                            <div id="noImageMessage">No image attached</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="closeDetailBtn" class="secondary-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Edit Task</h2>
+            <input type="text" id="editTaskInput">
+            <textarea id="editTaskDescription" placeholder="Task description..."></textarea>
+            <div class="modal-options">
+                <div class="option-group">
+                    <label>Priority</label>
+                    <select id="editPrioritySelect">
+                        <option value="low">Low Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label>Repeat</label>
+                    <select id="editRepeatSelect">
+                        <option value="none">No Repeat</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+            </div>
+            <div class="image-edit-container">
+                <label for="editTaskImage" class="image-upload-label">
+                    <i class="fas fa-image"></i> Change Image
+                </label>
+                <input type="file" id="editTaskImage" accept="image/*" style="display: none;">
+                <div id="editImagePreview" class="image-preview"></div>
+                <button id="removeImageBtn" class="secondary-btn small-btn">Remove Image</button>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveEditBtn" class="primary-btn">Save Changes</button>
+                <button id="cancelEditBtn" class="secondary-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
