@@ -6,6 +6,10 @@ const elements = {
     currentDateEl: document.getElementById('currentDate'),
     menuItems: document.querySelectorAll('.menu-item'),
     pages: document.querySelectorAll('.page'),
+    sidebarToggle: document.querySelector('.sidebar-toggle'),
+    sidebar: document.querySelector('.sidebar'),
+    sidebarOverlay: document.querySelector('.sidebar-overlay'),
+    
     
     // Task Input
     taskInput: document.getElementById('taskInput'),
@@ -890,12 +894,42 @@ function setupEventListeners() {
     // Date navigation
     elements.prevDayBtn.addEventListener('click', goToPreviousDay);
     elements.nextDayBtn.addEventListener('click', goToNextDay);
+
+ document.querySelectorAll('.sidebar-menu .menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+            if (window.innerWidth <= 768) { // Only for mobile
+                toggleSidebar(); // Close the sidebar
+            }
+        });
+    });
+
+
     
+// Sidebar toggle
+    elements.sidebarToggle.addEventListener('click', toggleSidebar);
+    elements.sidebarOverlay.addEventListener('click', toggleSidebar);
+
+
+
     // Add task
     elements.addTaskBtn.addEventListener('click', addTask);
     elements.taskInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') addTask();
     });
+
+
+
+// Add this new function
+function toggleSidebar() {
+    elements.sidebar.classList.toggle('active');
+    elements.sidebarOverlay.classList.toggle('active');
+    
+    // Prevent scrolling when sidebar is open
+    document.body.classList.toggle('sidebar-open', elements.sidebar.classList.contains('active'));
+}
+
+
+    
     
     // Image preview for new task
     elements.taskImage.addEventListener('change', function() {
